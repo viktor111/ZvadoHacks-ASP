@@ -1,0 +1,48 @@
+﻿@using X.PagedList;
+@using X.PagedList.Web.Common;
+@using X.PagedList.Mvc.Core;
+
+@model IPagedList<ArticlePreviewModel>
+
+<div>
+    <form asp-action="All" method="get">
+        <div class="form-actions no-color">
+            <p>
+                Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+                <input type="submit" value="Search" class="btn btn-default" /> |
+                <a asp-action="All">Back to Full List</a>
+            </p>
+        </div>
+    </form>
+    <a asp-action="All" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Last Name</a>
+    <a asp-action="All" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Enrollment Date</a>
+</div>
+
+<div>
+    @foreach (var article in Model)
+    {
+        <a asp-action="Details" asp-route-id="@article.ArticleId">
+
+            <img src="/Images/ArticlePreview/@article.PreviewImageId" />
+        </a>
+        <p>@article.Heading</p>
+        <p>@article.Author</p>
+        <p>@article.CreatedOn</p>
+        <p>@article.PreviewContent</p>
+        <a class="btn btn-info" asp-action="Update" asp-route-id="@article.ArticleId">Update</a>
+    }
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("All", "Article",
+    new
+    {
+        pageNumber = page,
+        searchString = ViewData["CurrentFilter"],
+        sortOrder = ViewData["CurrentSort"],
+
+    }),
+    new PagedListRenderOptions
+    {
+        LiElementClasses = new string[] { "page-item" },
+        PageClasses = new string[] { "page-link" }
+    })

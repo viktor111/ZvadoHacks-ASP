@@ -1,0 +1,28 @@
+﻿<form asp-action="Create" enctype="multipart/form-data">
+    <img id="imagePreview" src="#" alt="image preview" />
+    <input id="imageInput" type="file" multiple="multiple" name="Image" />
+    <span>Heading</span>
+    <input type="text" multiple="multiple" name="Heading" />
+    <span>Author</span>
+    <input type="text" multiple="multiple" name="Author" />
+    <span>Content</span>
+    <input type="text" multiple="multiple" name="Content" />
+    <input type="submit" />
+</form>
+
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();            
+            reader.onload = function (e) {
+                $('#imagePreview').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imageInput").change(function () {
+        readURL(this);
+    });
+</script>
