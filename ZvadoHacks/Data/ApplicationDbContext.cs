@@ -31,10 +31,17 @@ namespace ZvadoHacks.Data
                 .HasOne(u => u.ProfilePicture)
                 .WithOne(i => i.User)
                 .HasForeignKey<ImageData>(i => i.UserId);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(u => u.Comments)
+                .WithOne(c => c.User)
+                .HasForeignKey(c => c.UserId);
         }
 
         public DbSet<Article> Articles { get; set; }
 
         public DbSet<ImageData> Images { get; set; }
+
+        public DbSet<Comment> Comments { get; set; }
     }
 }

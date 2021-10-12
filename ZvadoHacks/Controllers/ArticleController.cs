@@ -8,6 +8,7 @@ using ZvadoHacks.Data.Entities;
 using ZvadoHacks.Data.Repositories;
 using ZvadoHacks.Infrastructure.Filters;
 using ZvadoHacks.Models;
+using ZvadoHacks.Models.Article;
 using ZvadoHacks.Services;
 
 namespace ZvadoHacks.Controllers

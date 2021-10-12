@@ -28,10 +28,10 @@ namespace ZvadoHacks.Data.Entities
 
         public Article Article { get; set; }
 
-        public Guid ArticleId { get; set; }
+        public Guid? ArticleId { get; set; }
 
         public ApplicationUser User { get; set; }
 
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
     }
 }

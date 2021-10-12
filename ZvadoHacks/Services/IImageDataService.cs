@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ZvadoHacks.Data;
 using ZvadoHacks.Data.Entities;
 using ZvadoHacks.Models;
 
@@ -18,7 +19,11 @@ namespace ZvadoHacks.Services
 
         Task<Stream> GetOriginal(string id);
 
+        Task<ImageData> GetUserImage(ApplicationUser user);
+
         Task<ImageData> Update(ImageInputModel image);
+
+        Task<ImageData> UpdateForUser(ImageInputModel image);
 
         Task<List<string>> GetAllImages();
     }

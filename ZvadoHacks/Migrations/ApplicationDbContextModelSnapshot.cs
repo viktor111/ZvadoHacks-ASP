@@ -248,6 +248,28 @@ namespace ZvadoHacks.Migrations
                     b.ToTable("Articles");
                 });
 
+            modelBuilder.Entity("ZvadoHacks.Data.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("ZvadoHacks.Data.Entities.ImageData", b =>
                 {
                     b.Property<Guid>("Id")
@@ -257,7 +279,7 @@ namespace ZvadoHacks.Migrations
                     b.Property<byte[]>("ArticleFullscreenContent")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<Guid>("ArticleId")
+                    b.Property<Guid?>("ArticleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("ArticlePreviewContent")
@@ -281,7 +303,8 @@ namespace ZvadoHacks.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ArticleId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ArticleId] IS NOT NULL");
 
                     b.HasIndex("UserId")
                         .IsUnique()
@@ -341,13 +364,20 @@ namespace ZvadoHacks.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ZvadoHacks.Data.Entities.Comment", b =>
+                {
+                    b.HasOne("ZvadoHacks.Data.ApplicationUser", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ZvadoHacks.Data.Entities.ImageData", b =>
                 {
                     b.HasOne("ZvadoHacks.Data.Entities.Article", "Article")
                         .WithOne("Image")
-                        .HasForeignKey("ZvadoHacks.Data.Entities.ImageData", "ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ZvadoHacks.Data.Entities.ImageData", "ArticleId");
 
                     b.HasOne("ZvadoHacks.Data.ApplicationUser", "User")
                         .WithOne("ProfilePicture")
@@ -360,6 +390,8 @@ namespace ZvadoHacks.Migrations
 
             modelBuilder.Entity("ZvadoHacks.Data.ApplicationUser", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("ProfilePicture");
                 });
 

@@ -229,6 +229,44 @@ namespace ZvadoHacks.Services
             });
 
             return memoryStream.ToArray();
-        }        
+        }
+
+        public async Task<ImageData> GetUserImage(ApplicationUser user)
+        {
+            var result = await _dbContext.Images.FirstOrDefaultAsync(i => i.UserId == user.Id);
+
+            return result;
+        }
+
+        public async Task<ImageData> UpdateForUser(ImageInputModel image)
+        {
+            using var imageResult = await Image.LoadAsync(image.Content);
+
+            var original = await SaveImage(imageResult, imageResult.Width);
+            var thumbnail = await SaveImage(imageResult, ThumbnailWidth);
+            var articelPreview = await SaveImage(imageResult, ArticlePreviewWidth);
+            var articleFullscreen = await SaveImage(imageResult, ArticleFullscreenWidth);
+
+            var dbContext = _serviceFactory
+            .CreateScope()
+            .ServiceProvider
+            .GetRequiredService<ApplicationDbContext>();
+
+            var entityToRemove = await dbContext.Images.FirstOrDefaultAsync(i => i.UserId == image.UserId);
+            dbContext.Remove(entityToRemove);
+
+            var imageModel = new ImageData();
+            imageModel.OriginalFileName = image.Name;
+            imageModel.OriginalType = image.Type;
+            imageModel.OriginalContent = original;
+            imageModel.ThumbnailContent = thumbnail;
+            imageModel.UserId = image.UserId;
+
+            var updatedEntity = dbContext.Images.Add(imageModel);
+
+            await dbContext.SaveChangesAsync();
+
+            return updatedEntity.Entity;
+        }
     }
 }
