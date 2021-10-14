@@ -12,6 +12,5 @@ namespace ZvadoHacks.Data.Repositories
             : base(dbContext)
         {
         }
-    
     }
 }

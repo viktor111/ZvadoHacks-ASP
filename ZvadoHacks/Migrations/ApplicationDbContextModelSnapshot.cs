@@ -44,6 +44,22 @@ namespace ZvadoHacks.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "cc0c4522-d6b4-41cf-b118-b37ef79835a4",
+                            ConcurrencyStamp = "9539c01a-aa96-4e44-89cb-129b091fe72e",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "72bd34a9-8dfe-49bc-a5dc-2982c377610a",
+                            ConcurrencyStamp = "c9e39489-68fb-45ef-ba02-1ff7e1cbd2ee",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -131,6 +147,18 @@ namespace ZvadoHacks.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "f0fc5c4b-3160-4d2c-9bf4-9f6e04405635",
+                            RoleId = "72bd34a9-8dfe-49bc-a5dc-2982c377610a"
+                        },
+                        new
+                        {
+                            UserId = "e62228ed-92c9-42ff-8f34-49253d360118",
+                            RoleId = "cc0c4522-d6b4-41cf-b118-b37ef79835a4"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -217,6 +245,40 @@ namespace ZvadoHacks.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "f0fc5c4b-3160-4d2c-9bf4-9f6e04405635",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "2a713fa0-4788-408a-908d-3edd2e8353e9",
+                            Email = "user2@hotmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER2@HOTMAIL.COM",
+                            NormalizedUserName = "USER2@HOTMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFrlmiSnRXk7ooMPFvuWAn7//Qs2j3FR/P2RVhIhm/30x9fMzabDeN5ZFhWyBL7QAA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "f2b7eaf6-3bc7-4377-b503-8ed3b130a907",
+                            TwoFactorEnabled = false,
+                            UserName = "user2@hotmail.com"
+                        },
+                        new
+                        {
+                            Id = "e62228ed-92c9-42ff-8f34-49253d360118",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "6521945c-c482-4b94-a702-e2d70f74127d",
+                            Email = "user3@hotmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER3@HOTMAIL.COM",
+                            NormalizedUserName = "USER3@HOTMAIL.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPCrTF1gCHxps7TJfZ6LuD9kFdSGGwZTWPfBcJnWxCZG/sgnD0V90xW0O+dWqIW8Eg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "feb3bc33-58e9-4be5-9f63-8edebe65d1cf",
+                            TwoFactorEnabled = false,
+                            UserName = "user3@hotmail.com"
+                        });
                 });
 
             modelBuilder.Entity("ZvadoHacks.Data.Entities.Article", b =>
@@ -254,6 +316,9 @@ namespace ZvadoHacks.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ArticleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
@@ -264,6 +329,8 @@ namespace ZvadoHacks.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ArticleId");
 
                     b.HasIndex("UserId");
 
@@ -366,9 +433,17 @@ namespace ZvadoHacks.Migrations
 
             modelBuilder.Entity("ZvadoHacks.Data.Entities.Comment", b =>
                 {
+                    b.HasOne("ZvadoHacks.Data.Entities.Article", "Article")
+                        .WithMany("Comments")
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ZvadoHacks.Data.ApplicationUser", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Article");
 
                     b.Navigation("User");
                 });
@@ -397,6 +472,8 @@ namespace ZvadoHacks.Migrations
 
             modelBuilder.Entity("ZvadoHacks.Data.Entities.Article", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Image");
                 });
 #pragma warning restore 612, 618

@@ -10,16 +10,18 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ZvadoHacks.Data;
 using ZvadoHacks.Data.Entities;
 using ZvadoHacks.Data.Repositories;
+using ZvadoHacks.Infrastructure.Extensions;
 using ZvadoHacks.Services;
 
 namespace ZvadoHacks
 {
     public class Startup
-    {        
+    {
         public IConfiguration Configuration { get; }
 
         private IWebHostEnvironment _currentEnvironment { get; set; }
@@ -53,17 +55,31 @@ namespace ZvadoHacks
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddControllersWithViews();
+
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireClaim(ClaimTypes.Role, "Admin", "Administrator");
+                });
+
+            });
 
             services.AddTransient<IImageDataService, ImageService>();
             services.AddTransient<IImageProcessorService, ImageService>();
             services.AddScoped<IRepository<Article>, ArticleRepository>();
+            services.AddScoped<IRepository<Comment>, CommentRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             _currentEnvironment = env;
+
+            app.PrepareDatabase();
 
             if (env.IsDevelopment())
             {

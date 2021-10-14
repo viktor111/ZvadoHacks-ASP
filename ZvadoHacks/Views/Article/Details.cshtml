@@ -1,8 +1,29 @@
 ﻿@model ArticleDetailsModel
 
-
 <img src="/Images/ArticleFullscreen/@Model.ImageId" />
 <p>@Model.Heading</p>
 <p>@Model.Author</p>
 <p>@Model.Content</p>
 <p>@Model.CreatedOn</p>
+
+<hr />
+
+<form asp-controller="Comment" asp-route-id="@Model.ArticleId" asp-action="Create" method="post">
+    <input name="Content" type="text" />
+
+    <input type="submit" />
+</form>
+
+<hr />
+
+@if (Model.Comments != null)
+{
+    foreach (var comment in Model.Comments)
+    {
+        <p>@comment.Content</p>
+    }
+}
+else
+{
+    <p>No comments!</p>
+}

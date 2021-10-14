@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,13 @@ using ZvadoHacks.Services;
 
 namespace ZvadoHacks.Controllers
 {
+    [Authorize]
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IImageDataService _imageDataService;
         private readonly IImageProcessorService _imageProcessorService;
-
+        
         public UserController
             (
                 UserManager<ApplicationUser> userManager,

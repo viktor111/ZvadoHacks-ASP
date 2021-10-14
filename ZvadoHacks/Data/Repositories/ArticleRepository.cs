@@ -14,21 +14,45 @@ namespace ZvadoHacks.Data.Repositories
         {
         }
 
+        public override async Task<Article> Delete(Article article)
+        {
+            var image = await _dbContext.Images
+                .FirstOrDefaultAsync(i => i.ArticleId == article.Id);
+
+            var coments = await _dbContext.Comments
+                    .Where(c => c.ArticleId == article.Id)
+                    .ToListAsync();
+
+            _dbContext.Remove(image);
+            _dbContext.RemoveRange(coments);
+            _dbContext.Remove(article);
+
+            await _dbContext.SaveChangesAsync();
+
+            return article;
+        }
+
         public override async Task<Article> Get(Guid id)
         {
-            var result = await _dbContext.Articles.FirstOrDefaultAsync(a => a.Id == id);
+            var result = await _dbContext.Articles
+                .FirstOrDefaultAsync(a => a.Id == id);
 
-            var image = await _dbContext.Images.FirstOrDefaultAsync(i => i.ArticleId == result.Id);
+            var image = await _dbContext.Images
+                .FirstOrDefaultAsync(i => i.ArticleId == result.Id);
+
+            var coments = await _dbContext.Comments
+                    .Where(c => c.ArticleId == id)
+                    .ToListAsync();
 
             result.Image = image;
+            result.Comments = coments;
 
             return result;
         }
 
         public override async Task<IEnumerable<Article>> All()
         {
-            var articles = await _dbContext
-                .Articles
+            var articles = await _dbContext.Articles
                 .ToListAsync();
 
             var result = new List<Article>();
@@ -44,10 +68,15 @@ namespace ZvadoHacks.Data.Repositories
                 articleToAdd.Content = currentArticle.Content;
                 articleToAdd.ViewsCount = currentArticle.ViewsCount;
                 articleToAdd.UpdatedOn = currentArticle.UpdatedOn;
-                articleToAdd.CreatedOn = currentArticle.CreatedOn;                          
+                articleToAdd.CreatedOn = currentArticle.CreatedOn;
 
-                var imageForArticle = await _dbContext
-                    .Images
+                var comentsForArticle = await _dbContext.Comments
+                    .Where(c => c.ArticleId == currentArticle.Id)
+                    .ToListAsync();
+
+                articleToAdd.Comments = comentsForArticle;
+
+                var imageForArticle = await _dbContext.Images
                     .FirstOrDefaultAsync(i => i.ArticleId == currentArticle.Id);
 
                 articleToAdd.Image = imageForArticle;

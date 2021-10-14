@@ -24,7 +24,11 @@ namespace ZvadoHacks.Services
         private readonly IServiceScopeFactory _serviceFactory;
         private readonly ApplicationDbContext _dbContext;
 
-        public ImageService(IServiceScopeFactory serviceFactory, ApplicationDbContext dbContext)
+        public ImageService
+            (   
+                IServiceScopeFactory serviceFactory,
+                ApplicationDbContext dbContext
+            )
         {
             _serviceFactory = serviceFactory;
             _dbContext = dbContext;

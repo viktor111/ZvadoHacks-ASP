@@ -43,6 +43,8 @@ namespace ZvadoHacks.Data.Repositories
                 return entity;
             });
 
+            await _dbContext.SaveChangesAsync();
+
             return await deleteTask;
         }
 

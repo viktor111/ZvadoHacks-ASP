@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,15 @@ namespace ZvadoHacks.Controllers
             _articleRepository = articleRepository;
             _imageDataService = imageDataService;
         }
+        [Authorize(Policy = "Admin")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var guid = new Guid(id);
+            var article = await _articleRepository.Get(guid);
+            await _articleRepository.Delete(article);
+
+            return RedirectToAction(nameof(All));
+        }
 
         [HttpGet]
         public async Task<IActionResult> Details(string id)
@@ -45,11 +55,13 @@ namespace ZvadoHacks.Controllers
             model.Author = article.Author;
             model.CreatedOn = article.CreatedOn;
             model.Content = article.Content;
+            model.Comments = article.Comments.ToList();
 
             return View(model);
         }
 
         [HttpPost]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Update(ArticleInputModel articleInputModel, string id)
         {
             var guid = new Guid(id);
@@ -73,6 +85,7 @@ namespace ZvadoHacks.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Update(string id)
         {
             TempData["articleId"] = id;
@@ -118,7 +131,7 @@ namespace ZvadoHacks.Controllers
                 Author = a.Author,
                 CreatedOn = a.CreatedOn,
                 PreviewContent = a.Content,
-                Content = a.Content
+                Content = a.Content                
             }).ToList();
 
             if (!String.IsNullOrEmpty(searchString))
@@ -146,6 +159,7 @@ namespace ZvadoHacks.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -153,6 +167,7 @@ namespace ZvadoHacks.Controllers
 
         [HttpPost]
         [RequestSizeLimitChecker]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Create(ArticleInputModel articleInputModel)
         {
             var articleToSave = new Article();

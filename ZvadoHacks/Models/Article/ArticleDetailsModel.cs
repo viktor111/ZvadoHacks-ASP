@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZvadoHacks.Data.Entities;
 
 namespace ZvadoHacks.Models.Article
 {
@@ -18,5 +19,7 @@ namespace ZvadoHacks.Models.Article
         public DateTime CreatedOn { get; set; }
 
         public string Content { get; set; }
+
+        public List<Data.Entities.Comment> Comments { get; set; }
     }
 }
