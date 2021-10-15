@@ -42,7 +42,8 @@ namespace ZvadoHacks.Controllers
             model.Username = await _userManager.GetUserNameAsync(user);
 
             var image = await _imageDataService.GetUserImage(user);
-            model.ImageId = image.Id.ToString();
+
+            if(image != null) model.ImageId = image.Id.ToString();
 
             return View(model);
         }

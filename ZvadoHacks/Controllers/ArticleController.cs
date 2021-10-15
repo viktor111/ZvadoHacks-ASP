@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using X.PagedList;
 using ZvadoHacks.Data.Entities;
 using ZvadoHacks.Data.Repositories;
+using ZvadoHacks.Helpers;
 using ZvadoHacks.Infrastructure.Filters;
 using ZvadoHacks.Models;
 using ZvadoHacks.Models.Article;
@@ -130,7 +131,7 @@ namespace ZvadoHacks.Controllers
                 Heading = a.Heading,
                 Author = a.Author,
                 CreatedOn = a.CreatedOn,
-                PreviewContent = a.Content,
+                PreviewContent = ArticleContentTrimmer.Trim(a.Content),
                 Content = a.Content                
             }).ToList();
 

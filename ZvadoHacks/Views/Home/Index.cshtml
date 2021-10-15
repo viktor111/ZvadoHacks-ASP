@@ -1,8 +1,12 @@
-﻿@{
+﻿@model HomeIndexModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to <span style="color: darkslateblue">Zvadohacks</span></h1>
+    <p>This is a blog and a platform to learn programming.</p>
 </div>
+<hr />
+<div class="text-center">Total Articles: <span class="text-muted">@Model.ArticlesCount</span></div>
+

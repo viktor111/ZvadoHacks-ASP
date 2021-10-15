@@ -1,37 +1,84 @@
 ﻿@using X.PagedList;
 @using X.PagedList.Web.Common;
 @using X.PagedList.Mvc.Core;
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @model IPagedList<ArticlePreviewModel>
 
-<div>
+<div class="form-articles">
     <form asp-action="All" method="get">
-        <div class="form-actions no-color">
-            <p>
-                Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-                <input type="submit" value="Search" class="btn btn-default" /> |
-                <a asp-action="All">Back to Full List</a>
-            </p>
+        <div class="grid-container">
+            <div>
+                <input id="input-search" class="form-control" type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            </div>
+            <div>
+                <input type="submit" value="Search" style="background-color: #082E36; color:white; margin-left: 10px;" class="btn" />
+            </div>
         </div>
-    </form>
-    <a asp-action="All" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Last Name</a>
-    <a asp-action="All" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Enrollment Date</a>
-</div>
 
+    </form>
+    <div style="margin-top: 20px">
+        <span class="text-muted">Order By:   </span>
+        <a style="background-color: #082E36; color:white; margin-left: 10px;" class="btn" asp-action="All" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Alphabetical</a>
+        <a style="background-color: #082E36; color:white;" class="btn" asp-action="All" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Date</a>
+    </div>
+    <div style="margin-top: 20px;">
+        <a class="a-non btn" style="background-color: #082E36; color:white" asp-action="All">Clear All Filters</a>
+    </div>
+    <div style="margin-top: 20px;">
+        @Html.PagedListPager(Model, page => Url.Action("All", "Article",
+        new
+        {
+            pageNumber = page,
+            searchString = ViewData["CurrentFilter"],
+            sortOrder = ViewData["CurrentSort"],
+
+        }),
+        new PagedListRenderOptions
+        {
+            LiElementClasses = new string[] { "page-item" },
+            PageClasses = new string[] { "page-link" }
+        })
+    </div>
+</div>
+<hr />
 <div>
     @foreach (var article in Model)
     {
-        <a asp-action="Details" asp-route-id="@article.ArticleId">
+        <div class="article-preview shadow-3">
+            <div>
+                <span class="h1"><a class="a-non" asp-action="Details" asp-route-id="@article.ArticleId">@article.Heading</a></span>
+            </div>
+            <div class="article-preview-image">
+                <a style="width: 100%" class="ripple" asp-action="Details" asp-route-id="@article.ArticleId">
+                    <img style="width: 60%; height: 600px" class="shadow-3 img-fluid rounded" src="/Images/Original/@article.PreviewImageId" />
+                </a>
+            </div>
 
-            <img src="/Images/ArticlePreview/@article.PreviewImageId" />
-        </a>
-        <p>@article.Heading</p>
-        <p>@article.Author</p>
-        <p>@article.CreatedOn</p>
-        <p>@article.PreviewContent</p>
-        <a class="btn btn-info" asp-action="Update" asp-route-id="@article.ArticleId">Update</a>
-        <a class="btn btn-info" asp-action="Delete" asp-route-id="@article.ArticleId">Delete</a>
+            <div class="info-container">
+                <div class="info-child">
+                    <span>By: </span> <span class="text-muted">@article.Author</span>
+
+                </div>
+                <div class="info-child">
+                    <span>Created On: </span><span class="text-muted">@article.CreatedOn.ToString("MMM. dd, yyyy")</span>
+                </div>
+            </div>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                @if (User.IsInRole("Admin"))
+                {
+
+                    <a class="btn btn-info" asp-action="Update" asp-route-id="@article.ArticleId">Update</a>
+                    <a class="btn btn-info" asp-action="Delete" asp-route-id="@article.ArticleId">Delete</a>
+                }
+            }
+        </div>
+        <hr />
     }
 </div>
 

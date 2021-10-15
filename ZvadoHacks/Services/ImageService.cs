@@ -257,7 +257,6 @@ namespace ZvadoHacks.Services
             .GetRequiredService<ApplicationDbContext>();
 
             var entityToRemove = await dbContext.Images.FirstOrDefaultAsync(i => i.UserId == image.UserId);
-            dbContext.Remove(entityToRemove);
 
             var imageModel = new ImageData();
             imageModel.OriginalFileName = image.Name;
@@ -265,6 +264,15 @@ namespace ZvadoHacks.Services
             imageModel.OriginalContent = original;
             imageModel.ThumbnailContent = thumbnail;
             imageModel.UserId = image.UserId;
+
+            if (entityToRemove == null)
+            {
+                var added = dbContext.Images.Add(imageModel);
+                await dbContext.SaveChangesAsync();
+                return added.Entity;
+            }
+
+            dbContext.Remove(entityToRemove);            
 
             var updatedEntity = dbContext.Images.Add(imageModel);
 

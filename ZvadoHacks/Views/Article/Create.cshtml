@@ -5,15 +5,15 @@
     <input type="text" multiple="multiple" name="Heading" />
     <span>Author</span>
     <input type="text" multiple="multiple" name="Author" />
+    <textarea multiple="multiple" name="Content"></textarea>
     <span>Content</span>
-    <input type="text" multiple="multiple" name="Content" />
     <input type="submit" />
 </form>
 
 <script>
     function readURL(input) {
         if (input.files && input.files[0]) {
-            var reader = new FileReader();            
+            var reader = new FileReader();
             reader.onload = function (e) {
                 $('#imagePreview').attr('src', e.target.result);
             }

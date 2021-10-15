@@ -1,29 +1,61 @@
-﻿@model ArticleDetailsModel
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 
-<img src="/Images/ArticleFullscreen/@Model.ImageId" />
-<p>@Model.Heading</p>
-<p>@Model.Author</p>
-<p>@Model.Content</p>
-<p>@Model.CreatedOn</p>
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
-<hr />
 
-<form asp-controller="Comment" asp-route-id="@Model.ArticleId" asp-action="Create" method="post">
-    <input name="Content" type="text" />
+@model ArticleDetailsModel
 
-    <input type="submit" />
-</form>
-
-<hr />
-
-@if (Model.Comments != null)
-{
-    foreach (var comment in Model.Comments)
-    {
-        <p>@comment.Content</p>
+<style>
+    .parallax {
+        background-image: url("/Images/Original/@Model.ImageId");
+        min-height: 500px;
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
-}
-else
-{
+</style>
+
+@*<img src="/Images/ArticleFullscreen/@Model.ImageId"/>*@
+
+<div class="article-details-container">
+    <p class="h1 text-center">@Model.Heading</p>
+    <p>Author: <span class="text-muted">@Model.Author</span></p>
+    <div class="parallax"></div>
+    <hr />
+    <p>@Html.Raw(Model.Content)</p>
+    @if (SignInManager.IsSignedIn(User))
+    {
+    @if (User.IsInRole("Admin"))
+        {
+    <hr />
+
+    <form asp-controller="Comment" asp-route-id="@Model.ArticleId" asp-action="Create" method="post">
+        <input name="Content" type="text" />
+        <input type="submit" />
+    </form>
+
+
+        }
+    }
+    <hr />
+    @if (Model.Comments != null)
+    {
+        foreach (var comment in Model.Comments)
+        {
+    <span>@comment.User.Id</span>
+    <p>@comment.Content</p>
+        }
+    }
+    else
+    {
     <p>No comments!</p>
-}
+    }
+</div>
+
+
+
+
+
