@@ -17,5 +17,7 @@ namespace ZvadoHacks.Models
         public Guid ArticleId { get; set; }
 
         public string UserId { get; set; }
+
+        public Guid ProjectId { get; set; }
     }
 }

@@ -42,6 +42,7 @@ namespace ZvadoHacks.Data.Repositories
 
             var coments = await _dbContext.Comments
                     .Where(c => c.ArticleId == id)
+                    .Include(c => c.User)
                     .ToListAsync();
 
             result.Image = image;

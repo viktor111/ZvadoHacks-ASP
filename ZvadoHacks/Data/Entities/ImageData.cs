@@ -32,6 +32,10 @@ namespace ZvadoHacks.Data.Entities
 
         public ApplicationUser User { get; set; }
 
-        public string? UserId { get; set; }
+        public string UserId { get; set; }
+
+        public Guid? ProjectDataId { get; set; }
+
+        public ProjectData Project { get; set; }
     }
 }

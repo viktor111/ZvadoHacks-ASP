@@ -102,7 +102,7 @@ namespace ZvadoHacks.Services
             catch
             {
 
-            }           
+            }               
         }
 
         public async Task Process(IEnumerable<ImageInputModel> images)
@@ -168,7 +168,7 @@ namespace ZvadoHacks.Services
             imageModel.ArticlePreviewContent = articelPreview;
             imageModel.ArticleFullscreenContent = articleFullscreen;
             imageModel.ArticleId = image.ArticleId;
-
+            imageModel.ProjectDataId = image.ProjectId;
 
             await dbContext.Images.AddAsync(imageModel);
             await dbContext.SaveChangesAsync();

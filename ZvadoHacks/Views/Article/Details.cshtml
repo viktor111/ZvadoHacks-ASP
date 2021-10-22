@@ -1,24 +1,23 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
+@using ZvadoHacks.Services
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-
+@inject IImageDataService ImageDataService
 
 @model ArticleDetailsModel
 
 <style>
     .parallax {
         background-image: url("/Images/Original/@Model.ImageId");
-        min-height: 500px;
+        min-height: 900px;
         background-attachment: fixed;
         background-position: center;
         background-repeat: no-repeat;
-        background-size: cover;
+        background-size: 100% auto;
     }
 </style>
-
-@*<img src="/Images/ArticleFullscreen/@Model.ImageId"/>*@
 
 <div class="article-details-container">
     <p class="h1 text-center">@Model.Heading</p>
@@ -28,25 +27,29 @@
     <p>@Html.Raw(Model.Content)</p>
     @if (SignInManager.IsSignedIn(User))
     {
-    @if (User.IsInRole("Admin"))
-        {
-    <hr />
+        <hr />
 
-    <form asp-controller="Comment" asp-route-id="@Model.ArticleId" asp-action="Create" method="post">
-        <input name="Content" type="text" />
-        <input type="submit" />
-    </form>
-
-
-        }
+        <form asp-controller="Comment" asp-route-id="@Model.ArticleId" asp-action="Create" method="post">
+            <input class="input-form" name="Content" type="text" />
+            <input class="btn" style="background-color: #082E36; color:white; margin-left: 10px;" type="submit" value="Submit Comment"/>
+        </form>
     }
     <hr />
     @if (Model.Comments != null)
     {
         foreach (var comment in Model.Comments)
         {
-    <span>@comment.User.Id</span>
-    <p>@comment.Content</p>
+            var image = await ImageDataService.GetUserImage(comment.User);
+            var imageId = string.Empty;
+            if(image != null)
+                {
+                    imageId = image.Id.ToString();
+                }
+                <div style="margin-bottom: 30px">
+                    <img style="border-radius:6px" width="30" height="30" id="imagePreview" src="/Images/Thumbnail/@imageId" alt="click to set profile pic" />
+                    <span style="margin-top: 10px;">@comment.Content</span>
+                </div>
+
         }
     }
     else

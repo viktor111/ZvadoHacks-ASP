@@ -70,6 +70,10 @@ html {
     background-color: #082E36 !important;
 }
 
+.comment-text{
+    margin-top: 10px;
+}
+
 .article-details-container{
     padding: 20px
 }
@@ -108,7 +112,30 @@ html {
 .info-child{
     width: 50%;
     float: left;
-}  
+}
+
+::-moz-selection { /* Code for Firefox */
+    color: white;
+    background: cadetblue;
+}
+
+::selection {
+    color: white;
+    background: cadetblue;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #0A1824 inset !important;
+    -webkit-text-fill-color: white !important;
+}
+.input-form {
+    border-radius: 5px;
+    background-color: #0A1824;
+    color: white;
+}
 
 body {
     /* Margin bottom by footer height */

@@ -34,13 +34,13 @@ namespace ZvadoHacks
 
         public void ConfigureServices(IServiceCollection services)
         {
-            if (_currentEnvironment.IsDevelopment())
+           /* if (_currentEnvironment.IsDevelopment())
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            }
-            if (_currentEnvironment.IsProduction())
+            }*/
+            if (_currentEnvironment.IsDevelopment())
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -73,6 +73,8 @@ namespace ZvadoHacks
             services.AddTransient<IImageProcessorService, ImageService>();
             services.AddScoped<IRepository<Article>, ArticleRepository>();
             services.AddScoped<IRepository<Comment>, CommentRepository>();
+            services.AddScoped<IRepository<ProjectData>, ProjectDataRepository>();
+            services.AddScoped<IRepository<AboutMe>, AboutMeRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

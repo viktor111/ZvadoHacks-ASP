@@ -66,8 +66,9 @@
     <script>
         tinymce.init({
             selector: 'textarea',
-            plugins: 'code advlist autolink lists link image charmap print preview hr anchor pagebreak',
+            plugins: 'spellchecker lists advlist table code advlist autolink lists link image charmap print preview hr anchor pagebreak',
             toolbar_mode: 'floating',
+            paste_data_images: true
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)

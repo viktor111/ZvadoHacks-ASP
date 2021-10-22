@@ -74,13 +74,16 @@ namespace ZvadoHacks.Controllers
 
             var article = await _articleRepository.Update(articleToSave);
 
-            var imageInpuModel = new ImageInputModel();
-            imageInpuModel.Name = articleInputModel.Image.FileName;
-            imageInpuModel.Type = articleInputModel.Image.ContentType;
-            imageInpuModel.Content = articleInputModel.Image.OpenReadStream();
-            imageInpuModel.ArticleId = article.Id;
+           if(articleInputModel.Image != null)
+            {
+                var imageInpuModel = new ImageInputModel();
+                imageInpuModel.Name = articleInputModel.Image.FileName;
+                imageInpuModel.Type = articleInputModel.Image.ContentType;
+                imageInpuModel.Content = articleInputModel.Image.OpenReadStream();
+                imageInpuModel.ArticleId = article.Id;
 
-            await _imageDataService.Update(imageInpuModel);
+                await _imageDataService.Update(imageInpuModel);
+            }
 
             return RedirectToAction(nameof(Details), new { id = TempData["articleId"] });
         }
@@ -123,7 +126,7 @@ namespace ZvadoHacks.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             var articles = await _articleRepository.All();
-
+           
             var model = articles.Select(a => new ArticlePreviewModel
             {
                 PreviewImageId = a.Image.Id.ToString(),
