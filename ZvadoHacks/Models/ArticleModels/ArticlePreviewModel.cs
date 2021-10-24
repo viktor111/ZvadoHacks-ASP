@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ZvadoHacks.Models.Article
+namespace ZvadoHacks.Models.ArticleModels
 {
     public class ArticlePreviewModel
     {

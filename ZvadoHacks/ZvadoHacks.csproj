@@ -26,8 +26,4 @@
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\AboutMe\" />
-  </ItemGroup>
-
 </Project>

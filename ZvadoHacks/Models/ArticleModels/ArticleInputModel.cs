@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ZvadoHacks.Models.Article
+namespace ZvadoHacks.Models.ArticleModels
 {
-    public class ArticleUpdateModel
+    public class ArticleInputModel
     {
-        public string ImageId { get; set; }
+        public IFormFile Image { get; set; }
 
         public string Heading { get; set; }
 

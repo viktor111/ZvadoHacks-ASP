@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ZvadoHacks.Models.User
+namespace ZvadoHacks.Models.UserModels
 {
     public class UserPasswordInputModel
     {

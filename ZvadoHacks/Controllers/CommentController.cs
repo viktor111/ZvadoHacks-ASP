@@ -2,13 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ZvadoHacks.Data;
 using ZvadoHacks.Data.Entities;
 using ZvadoHacks.Data.Repositories;
-using ZvadoHacks.Models.Comment;
+using ZvadoHacks.Models.CommentModels;
 
 namespace ZvadoHacks.Controllers
 {

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -10,7 +9,7 @@ using ZvadoHacks.Data.Repositories;
 using ZvadoHacks.Helpers;
 using ZvadoHacks.Infrastructure.Filters;
 using ZvadoHacks.Models;
-using ZvadoHacks.Models.Article;
+using ZvadoHacks.Models.ArticleModels;
 using ZvadoHacks.Services;
 
 namespace ZvadoHacks.Controllers

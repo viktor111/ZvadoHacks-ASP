@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ZvadoHacks.Models;
 
-namespace ZvadoHacks.Services
+namespace ZvadoHacks.Services.ImageService
 {
     public interface IImageProcessorService
     {

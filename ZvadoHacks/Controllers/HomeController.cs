@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ZvadoHacks.Data.Entities;
 using ZvadoHacks.Data.Repositories;
 using ZvadoHacks.Models;
-using ZvadoHacks.Models.Home;
+using ZvadoHacks.Models.HomeModels;
 
 namespace ZvadoHacks.Controllers
 {

@@ -1,24 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ZvadoHacks.Data.Entities;
 using ZvadoHacks.Data.Repositories;
 using ZvadoHacks.Models;
-using ZvadoHacks.Models.ProjectData;
+using ZvadoHacks.Models.ProjectDataModels;
 using ZvadoHacks.Services;
 
 namespace ZvadoHacks.Controllers
 {
     public class ProjectDataController : Controller
     {
-        private readonly ProjectDataRepository _projectDataRepository;
+        private readonly IRepository<ProjectData> _projectDataRepository;
         private readonly IImageProcessorService _imageProcessor;
 
         public ProjectDataController
             (
-                ProjectDataRepository projectDataRepository, 
+                IRepository<ProjectData> projectDataRepository, 
                 IImageProcessorService imageProcessor
             )
         {

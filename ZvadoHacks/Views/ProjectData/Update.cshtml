@@ -1,5 +1,10 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model ProjectDataUpdateModel
+
+<form asp-action="Update" method="post" enctype="multipart/form-data">
+    <input type="text" name="Name" value="@Model.Name"/>
+    <input type="text" name="Description" value="@Model.Description"/>
+    <input type="text" name="CodeLink" value="@Model.CodeLink"/>
+    <input type="text" name="DeployedLink" value="@Model.DeployedLink"/>
+
+    <input type="submit" />
+</form>s

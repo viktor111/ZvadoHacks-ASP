@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using ZvadoHacks.Data;
 using ZvadoHacks.Models;
-using ZvadoHacks.Models.User;
+using ZvadoHacks.Models.UserModels;
 using ZvadoHacks.Services;
 
 namespace ZvadoHacks.Controllers

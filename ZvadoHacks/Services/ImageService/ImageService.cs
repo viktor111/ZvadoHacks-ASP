@@ -12,7 +12,7 @@ using ZvadoHacks.Data;
 using ZvadoHacks.Data.Entities;
 using ZvadoHacks.Models;
 
-namespace ZvadoHacks.Services
+namespace ZvadoHacks.Services.ImageService
 {
     public class ImageService : IImageDataService, IImageProcessorService
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ZvadoHacks.Models.ProjectData
+namespace ZvadoHacks.Models.ProjectDataModels
 {
     public class ProjectDataUpdateModel
     {
