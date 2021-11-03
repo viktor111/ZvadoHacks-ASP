@@ -1,12 +1,11 @@
 ﻿@model AboutMeUpdateModel
 
-@*ToDo AboutMe Update View: Style the inputs and the form*@
-
 <form asp-action="Update" method="post">
-    <input type="text" name="FullName" />
-    <input type="email" name="Email"/>
-    <input type="text" name="PhoneNumber"/>
-    <input type="text" name="GitHubLink"/>
-    <input type="text" name="LinkedInLink"/>
-    <input type="text" name="Description"/>
+    <input class="input-form" type="text" name="FullName" placeholder="Name"/>
+    <input class="input-form" type="email" name="Email" placeholder="Email"/>
+    <input class="input-form" type="text" name="PhoneNumber" placeholder="Phone Number"/>
+    <input class="input-form" type="text" name="GitHubLink" placeholder="GitHubLink"/>
+    <input class="input-form" type="text" name="LinkedInLink" placeholder="LinkedInLink"/>
+    <input class="input-form" type="text" name="Description" placeholder="Description"/>
+    <input class="btn my-button"/>
 </form>

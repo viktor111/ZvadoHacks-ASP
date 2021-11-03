@@ -1,19 +1,11 @@
 ﻿@model AboutMeInputModel
-@*ToDo AboutMe Create View: Form inputs and styling*@
-        @*Guid Id
 
-        string FullName
-
-        string Email
-
-        string PhoneNumber
-
-        string GitHubLink
-
-        string LinkedInLink
-
-        string Description*@
-
-<form asp-action="Create" asp-controller="AboutMe">
-    
+<form asp-action="Create">
+    <input class="input-form" name="FullName" type="text" placeholder="Name"/>
+    <input class="input-form" name="Email" type="text" placeholder="Email"/>
+    <input class="input-form" name="PhoneNumber" type="text" placeholder="PhoneNumber"/>
+    <input class="input-form" name="GitHubLink" type="text" placeholder="GitHubLink"/>
+    <input class="input-form" name="LinkedInLink" type="text" placeholder="LinkedInLink"/>
+    <input class="input-form" name="Description" type="text" placeholder="Description"/>
+    <input class="btn my-button" type="submit"/>
 </form>

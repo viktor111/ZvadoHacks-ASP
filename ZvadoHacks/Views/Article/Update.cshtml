@@ -8,12 +8,12 @@
     <img id="imagePreview" src="/Images/ArticlePreview/@article.Image.Id.ToString()" alt="image preview" />
     <input id="imageInput" type="file" multiple="multiple" name="Image" />
     <span>Heading</span>
-    <input type="text" multiple="multiple" name="Heading" value="@article.Heading"/>
+    <input class="input-form" type="text" multiple="multiple" name="Heading" value="@article.Heading"/>
     <span>Author</span>
-    <input type="text" multiple="multiple" name="Author" value="@article.Author"/>
+    <input class="input-form" type="text" multiple="multiple" name="Author" value="@article.Author"/>
     <span>Content</span>
     <textarea type="text" multiple="multiple" name="Content">@article.Content</textarea>
-    <input type="submit" />
+    <input class="btn my-button" type="submit" />
 </form>
 
 <script>
