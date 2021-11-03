@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ZvadoHacks.Models;
 
@@ -12,6 +10,5 @@ namespace ZvadoHacks.Services.ImageService
 
         Task Process(ImageInputModel image);
 
-        Task ProcessUser(ImageInputModel image);
     }
 }

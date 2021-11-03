@@ -1,1 +1,31 @@
 ﻿@model AboutMeModel
+@*ToDo About View: display the data*@
+@*
+        Guid Id 
+
+        string FullName 
+
+        string Email 
+
+        string PhoneNumber 
+
+        string GitHubLink 
+
+        string LinkedInLink 
+
+        string Description 
+
+        List<ProjectDatApiModel> Projects
+*@
+
+<div>
+    <h1>About Me</h1>
+
+    <div class="about-me-data-container">
+        <h3>@Model.FullName</h3>
+        <p>@Model.Description</p>
+
+        <hr />
+        
+    </div>
+</div>

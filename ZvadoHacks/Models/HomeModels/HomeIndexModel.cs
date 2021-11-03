@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ZvadoHacks.Models.HomeModels
+﻿namespace ZvadoHacks.Models.HomeModels
 {
     public class HomeIndexModel
     {

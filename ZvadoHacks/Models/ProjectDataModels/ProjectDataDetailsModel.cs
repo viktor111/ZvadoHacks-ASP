@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZvadoHacks.Data.Entities;
 
 namespace ZvadoHacks.Models.ProjectDataModels
 {
@@ -16,5 +17,7 @@ namespace ZvadoHacks.Models.ProjectDataModels
         public string CodeLink { get; set; }
 
         public string DeployedLink { get; set; }
+        
+        public string ImageId { get; set; }
     }
 }

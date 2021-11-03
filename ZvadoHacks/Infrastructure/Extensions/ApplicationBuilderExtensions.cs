@@ -52,7 +52,7 @@ namespace ZvadoHacks.Infrastructure.Extensions
                     var user = new ApplicationUser
                     {
                         Email = adminEmail,
-                        UserName = adminEmail,
+                        UserName = adminEmail
                     };
 
                     await userManager.CreateAsync(user, adminPassword);

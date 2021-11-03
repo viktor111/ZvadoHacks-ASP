@@ -44,15 +44,17 @@ namespace ZvadoHacks.Controllers
 
             var articleId = new Guid(id);
 
-            var comment = new Comment();
-            comment.Content = inputModel.Content;
-            comment.ArticleId = articleId;
-            comment.UserId = user.Id;
-            comment.CreatedOn = DateTime.Now;
+            var comment = new Comment
+            {
+                Content = inputModel.Content,
+                ArticleId = articleId,
+                UserId = user.Id,
+                CreatedOn = DateTime.Now
+            };
 
             await _commentRepository.Add(comment);
 
-            return RedirectToAction("Details", "Article", new { id = id });
+            return RedirectToAction("Details", $"Article", new { id = id });
         }
     }
 }

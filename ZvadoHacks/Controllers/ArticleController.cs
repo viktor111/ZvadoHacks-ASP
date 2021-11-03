@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using X.PagedList;
@@ -10,7 +11,8 @@ using ZvadoHacks.Helpers;
 using ZvadoHacks.Infrastructure.Filters;
 using ZvadoHacks.Models;
 using ZvadoHacks.Models.ArticleModels;
-using ZvadoHacks.Services;
+using ZvadoHacks.Models.CommentModels;
+using ZvadoHacks.Services.ImageService;
 
 namespace ZvadoHacks.Controllers
 {
@@ -48,14 +50,39 @@ namespace ZvadoHacks.Controllers
 
             var article = await _articleRepository.Get(guid);
 
-            var model = new ArticleDetailsModel();
-            model.ArticleId = article.Id.ToString();
-            model.ImageId = article.Image.Id.ToString();
-            model.Heading = article.Heading;
-            model.Author = article.Author;
-            model.CreatedOn = article.CreatedOn;
-            model.Content = article.Content;
-            model.Comments = article.Comments.ToList();
+            var model = new ArticleDetailsModel
+            {
+                ArticleId = article.Id.ToString(),
+                ImageId = article.Image.Id.ToString(),
+                Heading = article.Heading,
+                Author = article.Author,
+                CreatedOn = article.CreatedOn,
+                Content = article.Content
+            };
+
+            var comments = new List<CommentModel>();
+            
+            foreach (var comment in article.Comments)
+            {
+                var commentModel = new CommentModel
+                {
+                    Id = comment.Id,
+                    CreatedOn = comment.CreatedOn,
+                    Content = comment.Content,
+                    User = comment.User,
+                    UserId = comment.UserId,
+                    Article = comment.Article,
+                    ArticleId = comment.ArticleId
+                };
+
+                var imageForComment = await _imageDataService.GetUserImage(comment.User);
+                
+                commentModel.ImageId = imageForComment.Id.ToString();
+                
+                comments.Add(commentModel);
+            }
+
+            model.Comments = comments;
 
             return View(model);
         }
@@ -73,18 +100,20 @@ namespace ZvadoHacks.Controllers
 
             var article = await _articleRepository.Update(articleToSave);
 
-           if(articleInputModel.Image != null)
-            {
-                var imageInpuModel = new ImageInputModel();
-                imageInpuModel.Name = articleInputModel.Image.FileName;
-                imageInpuModel.Type = articleInputModel.Image.ContentType;
-                imageInpuModel.Content = articleInputModel.Image.OpenReadStream();
-                imageInpuModel.ArticleId = article.Id;
+            if (articleInputModel.Image == null)
+                return RedirectToAction(nameof(Details), new {id = TempData["articleId"]});
+            
+            var imageInputModel = new ImageInputModel
+           {
+               Name = articleInputModel.Image.FileName,
+               Type = articleInputModel.Image.ContentType,
+               Content = articleInputModel.Image.OpenReadStream(),
+               ArticleId = article.Id
+           };
 
-                await _imageDataService.Update(imageInpuModel);
-            }
+           await _imageDataService.Update(imageInputModel);
 
-            return RedirectToAction(nameof(Details), new { id = TempData["articleId"] });
+           return RedirectToAction(nameof(Details), new { id = TempData["articleId"] });
         }
 
         [HttpGet]
@@ -139,26 +168,25 @@ namespace ZvadoHacks.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                model = model.Where(s => s.Heading.Contains(searchString)
-                                       || s.Content.Contains(searchString)).ToList();
+                model = model.Where(s => s.Heading.ToLower().Contains(searchString.ToLower())
+                                       || s.Content.ToLower().Contains(searchString.ToLower())).ToList();
             }
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    model = model.OrderByDescending(s => s.Heading).ToList();
-                    break;
-                case "Date":
-                    model = model.OrderBy(s => s.CreatedOn).ToList();
-                    break;
-                case "date_desc":
-                    model = model.OrderByDescending(s => s.CreatedOn).ToList();
-                    break;
-                default:
-                    model = model.OrderBy(s => s.Heading).ToList();
-                    break;
-            }            
 
-            return View(model.ToPagedList(pageNumber ?? 1, 2));
+            model = sortOrder switch
+            {
+                "name_desc" => model.OrderByDescending(s => s.Heading).ToList(),
+                "Date" => model.OrderBy(s => s.CreatedOn).ToList(),
+                "date_desc" => model.OrderByDescending(s => s.CreatedOn).ToList(),
+                _ => model.OrderBy(s => s.Heading).ToList()
+            };
+
+            var articleAllModel = new ArticleAllModel
+            {
+                Articles = model.ToPagedList(pageNumber ?? 1, 2),
+                IsAdmin = User.IsInRole("Admin")
+            };
+
+            return View(articleAllModel);
         }
 
         [HttpGet]
@@ -173,21 +201,25 @@ namespace ZvadoHacks.Controllers
         [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Create(ArticleInputModel articleInputModel)
         {
-            var articleToSave = new Article();
-            articleToSave.Heading = articleInputModel.Heading;
-            articleToSave.Author = articleInputModel.Author;
-            articleToSave.Content = articleInputModel.Content;
-            articleToSave.CreatedOn = DateTime.Now;
+            var articleToSave = new Article
+            {
+                Heading = articleInputModel.Heading,
+                Author = articleInputModel.Author,
+                Content = articleInputModel.Content,
+                CreatedOn = DateTime.Now
+            };
 
             var article = await _articleRepository.Add(articleToSave);
 
-            var imageInpuModel = new ImageInputModel();
-            imageInpuModel.Name = articleInputModel.Image.FileName;
-            imageInpuModel.Type = articleInputModel.Image.ContentType;
-            imageInpuModel.Content = articleInputModel.Image.OpenReadStream();
-            imageInpuModel.ArticleId = article.Id;
+            var imageInputModel = new ImageInputModel
+            {
+                Name = articleInputModel.Image.FileName,
+                Type = articleInputModel.Image.ContentType,
+                Content = articleInputModel.Image.OpenReadStream(),
+                ArticleId = article.Id
+            };
 
-            await _imageProcessor.Process(imageInpuModel);
+            await _imageProcessor.Process(imageInputModel);
 
             return RedirectToAction(nameof(Create));
         }

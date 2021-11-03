@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using ZvadoHacks.Services;
+using ZvadoHacks.Services.ImageService;
 
 namespace ZvadoHacks.Controllers
 {

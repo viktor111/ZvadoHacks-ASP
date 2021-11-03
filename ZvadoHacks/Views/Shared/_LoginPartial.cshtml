@@ -1,32 +1,20 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
-@using ZvadoHacks.Services
+@using ZvadoHacks.Constants
 
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-@inject IImageDataService ImageDataService
+@inject SignInManager<ApplicationUser> _signInManager
+@inject UserManager<ApplicationUser> _userManager
 
-@{ 
-    var imageId = string.Empty;
-    ImageData image = null;
-    if (SignInManager.IsSignedIn(User))
-    {
-        var user = await UserManager.GetUserAsync(User);
-        image = await ImageDataService.GetUserImage(user);
-        if(image != null)
-        {
-            imageId = image.Id.ToString();
-        }
-
-    }
+@{
+    var imageIdTempData = TempData.Peek(TempDataConstants.UserImageId);
 }
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
+@if (_signInManager.IsSignedIn(User))
 {
     <li class="nav-item">
         <a class="nav-link text-white" asp-controller="User" asp-action="Profile" asp-route-id="@User.FindFirstValue(ClaimTypes.NameIdentifier)" title="Manage">
-            <img style="border-radius:6px" width="30" height="30" id="imagePreview" src="/Images/Thumbnail/@imageId" alt="click to set profile pic" />
+            <img style="border-radius:6px" width="30" height="30" id="imagePreview" src="/Images/Thumbnail/@imageIdTempData" alt="click to set profile pic" />
         </a>
     </li>
     <li class="nav-item">

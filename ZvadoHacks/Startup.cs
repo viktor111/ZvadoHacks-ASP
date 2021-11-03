@@ -1,35 +1,30 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using ZvadoHacks.Data;
 using ZvadoHacks.Data.Entities;
 using ZvadoHacks.Data.Repositories;
 using ZvadoHacks.Infrastructure.Extensions;
-using ZvadoHacks.Services;
+using ZvadoHacks.Services.ImageService;
 
 namespace ZvadoHacks
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
-        private IWebHostEnvironment _currentEnvironment { get; set; }
+        private IWebHostEnvironment CurrentEnvironment { get; set; }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment currentEnvironment)
         {
             Configuration = configuration;
-            _currentEnvironment = currentEnvironment;
+            CurrentEnvironment = currentEnvironment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -40,7 +35,17 @@ namespace ZvadoHacks
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             }*/
-            if (_currentEnvironment.IsDevelopment())
+           
+           services.AddDistributedMemoryCache();
+
+           services.AddSession(options =>
+           {
+               options.IdleTimeout = TimeSpan.FromSeconds(1000000);
+               options.Cookie.HttpOnly = true;
+               options.Cookie.IsEssential = true;
+           });
+           
+            if (CurrentEnvironment.IsDevelopment())
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -79,7 +84,7 @@ namespace ZvadoHacks
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            _currentEnvironment = env;
+            CurrentEnvironment = env;
 
             app.PrepareDatabase();
 
@@ -101,6 +106,8 @@ namespace ZvadoHacks
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSession();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

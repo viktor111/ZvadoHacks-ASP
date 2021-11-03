@@ -5,7 +5,7 @@ using ZvadoHacks.Data.Entities;
 using ZvadoHacks.Data.Repositories;
 using ZvadoHacks.Models;
 using ZvadoHacks.Models.ProjectDataModels;
-using ZvadoHacks.Services;
+using ZvadoHacks.Services.ImageService;
 
 namespace ZvadoHacks.Controllers
 {
@@ -30,12 +30,15 @@ namespace ZvadoHacks.Controllers
 
             var projectData = await _projectDataRepository.Get(guid);
 
-            var model = new ProjectDataDetailsModel();
-            model.Id = projectData.Id;
-            model.Name = projectData.Name;
-            model.Description = projectData.Description;
-            model.DeployedLink = projectData.DeployedLink;
-            model.CodeLink = projectData.CodeLink;
+            var model = new ProjectDataDetailsModel
+            {
+                Id = projectData.Id,
+                Name = projectData.Name,
+                Description = projectData.Description,
+                DeployedLink = projectData.DeployedLink,
+                CodeLink = projectData.CodeLink,
+                ImageId = projectData.Image.Id.ToString()
+            };
 
             return View(model);
         }
@@ -48,20 +51,24 @@ namespace ZvadoHacks.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProjectDataInputModel inputModel)
         {
-            var project = new ProjectData();
-            project.Description = inputModel.Description;
-            project.Name = inputModel.Name;
-            project.CodeLink = inputModel.CodeLink;
-            project.DeployedLink = inputModel.DeployedLink;
+            var project = new ProjectData
+            {
+                Description = inputModel.Description,
+                Name = inputModel.Name,
+                CodeLink = inputModel.CodeLink,
+                DeployedLink = inputModel.DeployedLink
+            };
             var result = await _projectDataRepository.Add(project);
 
-            var imageInpuModel = new ImageInputModel();
-            imageInpuModel.Name = inputModel.Image.FileName;
-            imageInpuModel.Type = inputModel.Image.ContentType;
-            imageInpuModel.Content = inputModel.Image.OpenReadStream();
-            imageInpuModel.ProjectId = result.Id;
+            var imageInputModel = new ImageInputModel
+            {
+                Name = inputModel.Image.FileName,
+                Type = inputModel.Image.ContentType,
+                Content = inputModel.Image.OpenReadStream(),
+                ProjectId = result.Id
+            };
 
-            await _imageProcessor.Process(imageInpuModel);
+            await _imageProcessor.Process(imageInputModel);
 
             return View();
         }
@@ -72,12 +79,14 @@ namespace ZvadoHacks.Controllers
 
             var projectData = await _projectDataRepository.Get(guid);
 
-            var model = new ProjectDataUpdateModel();
-            model.Id = projectData.Id;
-            model.Name = projectData.Name;
-            model.Description = projectData.Description;
-            model.DeployedLink = projectData.DeployedLink;
-            model.CodeLink = projectData.CodeLink;
+            var model = new ProjectDataUpdateModel
+            {
+                Id = projectData.Id,
+                Name = projectData.Name,
+                Description = projectData.Description,
+                DeployedLink = projectData.DeployedLink,
+                CodeLink = projectData.CodeLink
+            };
 
             return View(model);
         }
@@ -94,6 +103,17 @@ namespace ZvadoHacks.Controllers
             await _projectDataRepository.Update(projectData);
 
             return RedirectToAction(nameof(Details));
+        }
+        
+        public async Task<IActionResult> Delete(string id)
+        {
+            var guid = new Guid(id);
+
+            var projectData = await _projectDataRepository.Get(guid);
+
+            await _projectDataRepository.Delete(projectData);
+
+            return Redirect("/");
         }
     }
 }

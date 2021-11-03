@@ -30,17 +30,42 @@ namespace ZvadoHacks.Controllers
             var aboutMeData = await _aboutMeRepository.Get(guid);
             var projects = await _projectDataRepository.All();
 
-            var model = new AboutMeModel();
-            model.Id = aboutMeData.Id;
-            model.FullName = aboutMeData.FullName;
-            model.Description = aboutMeData.Description;
-            model.Email = aboutMeData.Email;
-            model.GitHubLink = aboutMeData.GitHubLink;
-            model.LinkedInLink = aboutMeData.LinkedInLink;
-            model.PhoneNumber = aboutMeData.PhoneNumber;
-            model.Projects = projects.ToList();
+            var model = new AboutMeModel
+            {
+                Id = aboutMeData.Id,
+                FullName = aboutMeData.FullName,
+                Description = aboutMeData.Description,
+                Email = aboutMeData.Email,
+                GitHubLink = aboutMeData.GitHubLink,
+                LinkedInLink = aboutMeData.LinkedInLink,
+                PhoneNumber = aboutMeData.PhoneNumber,
+                Projects = projects.ToList()
+            };
 
             return View(model);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(AboutMeInputModel inputModel)
+        {
+            var aboutMe = new AboutMe
+            {
+                FullName = inputModel.FullName,
+                Description = inputModel.Description,
+                Email = inputModel.Email,
+                PhoneNumber = inputModel.PhoneNumber,
+                GitHubLink = inputModel.GitHubLink,
+                LinkedInLink = inputModel.LinkedInLink
+            };
+
+            var result = await _aboutMeRepository.Add(aboutMe);
+                
+            return RedirectToAction(nameof(AboutMe), new {id = result.Id.ToString()});
         }
 
         public async Task<IActionResult> Update(string id)
@@ -49,33 +74,35 @@ namespace ZvadoHacks.Controllers
 
             var aboutMeData = await _aboutMeRepository.Get(guid);
 
-            var model = new AboutMeUpdateModel();
-            model.Id = aboutMeData.Id;
-            model.FullName = aboutMeData.FullName;
-            model.Description = aboutMeData.Description;
-            model.Email = aboutMeData.Email;
-            model.GitHubLink = aboutMeData.GitHubLink;
-            model.LinkedInLink = aboutMeData.LinkedInLink;
-            model.PhoneNumber = aboutMeData.PhoneNumber;
+            var model = new AboutMeUpdateModel
+            {
+                Id = aboutMeData.Id,
+                FullName = aboutMeData.FullName,
+                Description = aboutMeData.Description,
+                Email = aboutMeData.Email,
+                GitHubLink = aboutMeData.GitHubLink,
+                LinkedInLink = aboutMeData.LinkedInLink,
+                PhoneNumber = aboutMeData.PhoneNumber
+            };
 
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(AboutMeInputModel inputMopdel)
+        public async Task<IActionResult> Update(AboutMeInputModel inputModel)
         {
-            var aboutMeData = await _aboutMeRepository.Get(inputMopdel.Id);
+            var aboutMeData = await _aboutMeRepository.Get(inputModel.Id);
 
-            aboutMeData.FullName = inputMopdel.FullName;
-            aboutMeData.Description = inputMopdel.Description;
-            aboutMeData.Email = inputMopdel.Email;
-            aboutMeData.GitHubLink = inputMopdel.GitHubLink;
-            aboutMeData.LinkedInLink = inputMopdel.LinkedInLink;
-            aboutMeData.PhoneNumber = inputMopdel.PhoneNumber;
+            aboutMeData.FullName = inputModel.FullName;
+            aboutMeData.Description = inputModel.Description;
+            aboutMeData.Email = inputModel.Email;
+            aboutMeData.GitHubLink = inputModel.GitHubLink;
+            aboutMeData.LinkedInLink = inputModel.LinkedInLink;
+            aboutMeData.PhoneNumber = inputModel.PhoneNumber;
 
             await _aboutMeRepository.Update(aboutMeData);
 
-            return RedirectToAction(nameof(AboutMe), inputMopdel.Id);
+            return RedirectToAction(nameof(AboutMe), inputModel.Id);
         }
     }
 }

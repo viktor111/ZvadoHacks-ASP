@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace ZvadoHacks.Models.CommentModels
+﻿namespace ZvadoHacks.Models.CommentModels
 {
     public class CommentInputModel
     {

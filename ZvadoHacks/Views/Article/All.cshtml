@@ -4,10 +4,7 @@
 @using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
 
-@inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-
-@model IPagedList<ArticlePreviewModel>
+@model ArticleAllModel
 
 <div class="form-articles">
     <form asp-action="All" method="get">
@@ -30,14 +27,14 @@
         <a class="a-non btn" style="background-color: #082E36; color:white" asp-action="All">Clear All Filters</a>
     </div>
     <div style="margin-top: 20px;">
-        @Html.PagedListPager(Model, page => Url.Action("All", "Article",
+        @Html.PagedListPager(Model.Articles, page => Url.Action("All", "Article",
         new
         {
             pageNumber = page,
             searchString = ViewData["CurrentFilter"],
             sortOrder = ViewData["CurrentSort"],
 
-        }),
+        }), 
         new PagedListRenderOptions
         {
             LiElementClasses = new string[] { "page-item" },
@@ -47,7 +44,7 @@
 </div>
 <hr />
 <div>
-    @foreach (var article in Model)
+    @foreach (var article in Model.Articles)
     {
         <div class="article-preview shadow-3">
             <div>
@@ -68,21 +65,17 @@
                     <span>Created On: </span><span class="text-muted">@article.CreatedOn.ToString("MMM. dd, yyyy")</span>
                 </div>
             </div>
-            @if (SignInManager.IsSignedIn(User))
+            @if (Model.IsAdmin)
             {
-                @if (User.IsInRole("Admin"))
-                {
-
-                    <a class="btn btn-info" asp-action="Update" asp-route-id="@article.ArticleId">Update</a>
-                    <a class="btn btn-info" asp-action="Delete" asp-route-id="@article.ArticleId">Delete</a>
-                }
+                <a class="btn btn-info" asp-action="Update" asp-route-id="@article.ArticleId">Update</a>
+                <a class="btn btn-info" asp-action="Delete" asp-route-id="@article.ArticleId">Delete</a>
             }
         </div>
         <hr />
     }
 </div>
 
-@Html.PagedListPager(Model, page => Url.Action("All", "Article",
+@Html.PagedListPager(Model.Articles, page => Url.Action("All", "Article",
     new
     {
         pageNumber = page,

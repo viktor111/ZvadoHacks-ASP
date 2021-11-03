@@ -6,12 +6,15 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using ZvadoHacks.Constants;
 using ZvadoHacks.Data;
+using ZvadoHacks.Services.ImageService;
 
 namespace ZvadoHacks.Areas.Identity.Pages.Account
 {
@@ -21,12 +24,15 @@ namespace ZvadoHacks.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IImageDataService _imageDataService;
 
         public LoginModel(SignInManager<ApplicationUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, 
+            IImageDataService imageDataService)
         {
             _userManager = userManager;
+            _imageDataService = imageDataService;
             _signInManager = signInManager;
             _logger = logger;
         }
@@ -84,6 +90,12 @@ namespace ZvadoHacks.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByNameAsync(Input.Username);
+                    
+                    var imageForUser = await _imageDataService.GetUserImage(user);
+                    
+                    TempData[TempDataConstants.UserImageId] = imageForUser.Id.ToString();
+                    
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

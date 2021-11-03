@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using ZvadoHacks.Constants;
 using ZvadoHacks.Data;
 using ZvadoHacks.Models;
 using ZvadoHacks.Models.UserModels;
-using ZvadoHacks.Services;
+using ZvadoHacks.Services.ImageService;
 
 namespace ZvadoHacks.Controllers
 {
@@ -14,18 +15,15 @@ namespace ZvadoHacks.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IImageDataService _imageDataService;
-        private readonly IImageProcessorService _imageProcessorService;
-        
+
         public UserController
             (
                 UserManager<ApplicationUser> userManager,
-                IImageDataService imageDataService,
-                IImageProcessorService imageProcessorService
+                IImageDataService imageDataService
             )
         {
             _userManager = userManager;
             _imageDataService = imageDataService;
-            _imageProcessorService = imageProcessorService;
         }
 
         [HttpGet]
@@ -33,10 +31,12 @@ namespace ZvadoHacks.Controllers
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
-            var model = new UserProfileModel();
-            model.Email = await _userManager.GetEmailAsync(user);
-            model.Id = await _userManager.GetUserIdAsync(user);
-            model.Username = await _userManager.GetUserNameAsync(user);
+            var model = new UserProfileModel
+            {
+                Email = await _userManager.GetEmailAsync(user),
+                Id = await _userManager.GetUserIdAsync(user),
+                Username = await _userManager.GetUserNameAsync(user)
+            };
 
             var image = await _imageDataService.GetUserImage(user);
 
@@ -97,13 +97,17 @@ namespace ZvadoHacks.Controllers
 
             await _userManager.UpdateAsync(user);
 
-            var image = new ImageInputModel();
-            image.Content = inputModel.Image.OpenReadStream();
-            image.Name = inputModel.Image.FileName;
-            image.Type = inputModel.Image.ContentType;
-            image.UserId = user.Id;
+            var image = new ImageInputModel
+            {
+                Content = inputModel.Image.OpenReadStream(),
+                Name = inputModel.Image.FileName,
+                Type = inputModel.Image.ContentType,
+                UserId = user.Id
+            };
 
-            await _imageDataService.UpdateForUser(image);
+            var updatedImage = await _imageDataService.UpdateForUser(image);
+            
+            TempData[TempDataConstants.UserImageId] = updatedImage.Id.ToString();
 
             return RedirectToAction(nameof(Profile));
         }

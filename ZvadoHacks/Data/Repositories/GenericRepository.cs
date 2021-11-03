@@ -10,47 +10,47 @@ namespace ZvadoHacks.Data.Repositories
     public class GenericRepository<T> : IRepository<T> 
         where T : class
     {
-        protected ApplicationDbContext _dbContext;
+        protected readonly ApplicationDbContext DbContext;
 
-        public GenericRepository
+        protected GenericRepository
             (
                 ApplicationDbContext dbContext
             )
         {
-            _dbContext = dbContext;
+            DbContext = dbContext;
         }
 
-        public async virtual Task<T> Add(T entity)
+        public virtual async Task<T> Add(T entity)
         {
-            var result = await _dbContext.AddAsync(entity);
+            var result = await DbContext.AddAsync(entity);
             await SaveChanges();
             return result.Entity;
         }
 
-        public async virtual Task<IEnumerable<T>> All()
+        public virtual async Task<IEnumerable<T>> All()
         {
-            var result = await _dbContext.Set<T>()
+            var result = await DbContext.Set<T>()
                 .ToListAsync();
 
             return result;
         }
 
-        public async virtual Task<T> Delete(T entity)
+        public virtual async Task<T> Delete(T entity)
         {
             var deleteTask = Task.Run(() =>
             {
-                _dbContext.Remove(entity);
+                DbContext.Remove(entity);
                 return entity;
             });
 
-            await _dbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync();
 
             return await deleteTask;
         }
 
-        public async virtual Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
+        public virtual async Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
         {
-            var result = await _dbContext.Set<T>()
+            var result = await DbContext.Set<T>()
                 .AsQueryable()
                 .Where(predicate)
                 .ToListAsync();
@@ -58,32 +58,32 @@ namespace ZvadoHacks.Data.Repositories
             return result;
         }
 
-        public async virtual Task<T> Get(Guid id)
+        public virtual async Task<T> Get(Guid id)
         {
-            var result = await _dbContext.FindAsync<T>(id);
+            var result = await DbContext.FindAsync<T>(id);
 
             return result;
         }
 
-        public async virtual Task<T> GetByProperty(Expression<Func<T, bool>> predicate)
+        public virtual async Task<T> GetByProperty(Expression<Func<T, bool>> predicate)
         {
-            var genericDb = _dbContext.Set<T>();
+            var genericDb = DbContext.Set<T>();
 
             var result = await genericDb.FirstOrDefaultAsync(predicate);
 
             return result;
         }
 
-        public async virtual Task<bool> SaveChanges()
+        protected virtual async Task<bool> SaveChanges()
         {
-            return (await _dbContext.SaveChangesAsync()) > 0;
+            return (await DbContext.SaveChangesAsync()) > 0;
         }
 
-        public async virtual Task<T> Update(T entity)
+        public virtual async Task<T> Update(T entity)
         {
             var updateTask = Task.Run(() =>
             {
-                var updatedEntity = _dbContext.Update(entity).Entity;
+                var updatedEntity = DbContext.Update(entity).Entity;
 
                 return updatedEntity;
             });

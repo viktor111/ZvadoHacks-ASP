@@ -44,22 +44,6 @@ namespace ZvadoHacks.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "cc0c4522-d6b4-41cf-b118-b37ef79835a4",
-                            ConcurrencyStamp = "9539c01a-aa96-4e44-89cb-129b091fe72e",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "72bd34a9-8dfe-49bc-a5dc-2982c377610a",
-                            ConcurrencyStamp = "c9e39489-68fb-45ef-ba02-1ff7e1cbd2ee",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -147,18 +131,6 @@ namespace ZvadoHacks.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "f0fc5c4b-3160-4d2c-9bf4-9f6e04405635",
-                            RoleId = "72bd34a9-8dfe-49bc-a5dc-2982c377610a"
-                        },
-                        new
-                        {
-                            UserId = "e62228ed-92c9-42ff-8f34-49253d360118",
-                            RoleId = "cc0c4522-d6b4-41cf-b118-b37ef79835a4"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -245,40 +217,35 @@ namespace ZvadoHacks.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = "f0fc5c4b-3160-4d2c-9bf4-9f6e04405635",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "2a713fa0-4788-408a-908d-3edd2e8353e9",
-                            Email = "user2@hotmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER2@HOTMAIL.COM",
-                            NormalizedUserName = "USER2@HOTMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFrlmiSnRXk7ooMPFvuWAn7//Qs2j3FR/P2RVhIhm/30x9fMzabDeN5ZFhWyBL7QAA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "f2b7eaf6-3bc7-4377-b503-8ed3b130a907",
-                            TwoFactorEnabled = false,
-                            UserName = "user2@hotmail.com"
-                        },
-                        new
-                        {
-                            Id = "e62228ed-92c9-42ff-8f34-49253d360118",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "6521945c-c482-4b94-a702-e2d70f74127d",
-                            Email = "user3@hotmail.com",
-                            EmailConfirmed = false,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER3@HOTMAIL.COM",
-                            NormalizedUserName = "USER3@HOTMAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPCrTF1gCHxps7TJfZ6LuD9kFdSGGwZTWPfBcJnWxCZG/sgnD0V90xW0O+dWqIW8Eg==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "feb3bc33-58e9-4be5-9f63-8edebe65d1cf",
-                            TwoFactorEnabled = false,
-                            UserName = "user3@hotmail.com"
-                        });
+            modelBuilder.Entity("ZvadoHacks.Data.Entities.AboutMe", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GitHubLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LinkedInLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AboutMe");
                 });
 
             modelBuilder.Entity("ZvadoHacks.Data.Entities.Article", b =>
@@ -361,6 +328,9 @@ namespace ZvadoHacks.Migrations
                     b.Property<string>("OriginalType")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("ProjectDataId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<byte[]>("ThumbnailContent")
                         .HasColumnType("varbinary(max)");
 
@@ -373,11 +343,38 @@ namespace ZvadoHacks.Migrations
                         .IsUnique()
                         .HasFilter("[ArticleId] IS NOT NULL");
 
+                    b.HasIndex("ProjectDataId")
+                        .IsUnique()
+                        .HasFilter("[ProjectDataId] IS NOT NULL");
+
                     b.HasIndex("UserId")
                         .IsUnique()
                         .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("ZvadoHacks.Data.Entities.ProjectData", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CodeLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeployedLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectsData");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -454,11 +451,17 @@ namespace ZvadoHacks.Migrations
                         .WithOne("Image")
                         .HasForeignKey("ZvadoHacks.Data.Entities.ImageData", "ArticleId");
 
+                    b.HasOne("ZvadoHacks.Data.Entities.ProjectData", "Project")
+                        .WithOne("Image")
+                        .HasForeignKey("ZvadoHacks.Data.Entities.ImageData", "ProjectDataId");
+
                     b.HasOne("ZvadoHacks.Data.ApplicationUser", "User")
                         .WithOne("ProfilePicture")
                         .HasForeignKey("ZvadoHacks.Data.Entities.ImageData", "UserId");
 
                     b.Navigation("Article");
+
+                    b.Navigation("Project");
 
                     b.Navigation("User");
                 });
@@ -474,6 +477,11 @@ namespace ZvadoHacks.Migrations
                 {
                     b.Navigation("Comments");
 
+                    b.Navigation("Image");
+                });
+
+            modelBuilder.Entity("ZvadoHacks.Data.Entities.ProjectData", b =>
+                {
                     b.Navigation("Image");
                 });
 #pragma warning restore 612, 618

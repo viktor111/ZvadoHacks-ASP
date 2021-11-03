@@ -16,49 +16,49 @@ namespace ZvadoHacks.Data.Repositories
 
         public override async Task<Article> Delete(Article article)
         {
-            var image = await _dbContext.Images
+            var image = await DbContext.Images
                 .FirstOrDefaultAsync(i => i.ArticleId == article.Id);
 
-            var coments = await _dbContext.Comments
+            var comments = await DbContext.Comments
                     .Where(c => c.ArticleId == article.Id)
                     .ToListAsync();
 
-            _dbContext.Remove(image);
-            _dbContext.RemoveRange(coments);
-            _dbContext.Remove(article);
+            DbContext.Remove(image);
+            DbContext.RemoveRange(comments);
+            DbContext.Remove(article);
 
-            await _dbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync();
 
             return article;
         }
 
         public override async Task<Article> Get(Guid id)
         {
-            var result = await _dbContext.Articles
+            var result = await DbContext.Articles
                 .FirstOrDefaultAsync(a => a.Id == id);
 
-            var image = await _dbContext.Images
+            var image = await DbContext.Images
                 .FirstOrDefaultAsync(i => i.ArticleId == result.Id);
 
-            var coments = await _dbContext.Comments
-                    .Where(c => c.ArticleId == id)
-                    .Include(c => c.User)
-                    .ToListAsync();
+            var comments = await DbContext.Comments
+                .Where(c => c.ArticleId == id)
+                .Include(c => c.User)
+                .ToListAsync();
 
             result.Image = image;
-            result.Comments = coments;
+            result.Comments = comments;
 
             return result;
         }
 
         public override async Task<IEnumerable<Article>> All()
         {
-            var articles = await _dbContext.Articles
+            var articles = await DbContext.Articles
                 .ToListAsync();
 
             var result = new List<Article>();
 
-            for (int i = 0; i < articles.Count(); i++)
+            for (int i = 0; i < articles.Count; i++)
             { 
                 var currentArticle = articles[i];
 
@@ -71,14 +71,14 @@ namespace ZvadoHacks.Data.Repositories
                 articleToAdd.UpdatedOn = currentArticle.UpdatedOn;
                 articleToAdd.CreatedOn = currentArticle.CreatedOn;
 
-                var comentsForArticle = await _dbContext.Comments
+                var commentsForArticle = await DbContext.Comments
                     .Where(c => c.ArticleId == currentArticle.Id)
                     .ToListAsync();
 
-                articleToAdd.Comments = comentsForArticle;
+                articleToAdd.Comments = commentsForArticle;
 
-                var imageForArticle = await _dbContext.Images
-                    .FirstOrDefaultAsync(i => i.ArticleId == currentArticle.Id);
+                var imageForArticle = await DbContext.Images
+                    .FirstOrDefaultAsync(imageData => imageData.ArticleId == currentArticle.Id);
 
                 articleToAdd.Image = imageForArticle;
 

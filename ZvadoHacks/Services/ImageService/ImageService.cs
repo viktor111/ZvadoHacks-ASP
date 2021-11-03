@@ -16,7 +16,6 @@ namespace ZvadoHacks.Services.ImageService
 {
     public class ImageService : IImageDataService, IImageProcessorService
     {
-
         private const int ThumbnailWidth = 300;
         private const int ArticlePreviewWidth = 600;
         private const int ArticleFullscreenWidth = 1000;
@@ -58,14 +57,16 @@ namespace ZvadoHacks.Services.ImageService
             var entityToRemove = await dbContext.Images.FirstOrDefaultAsync(i => i.ArticleId == image.ArticleId);
             dbContext.Remove(entityToRemove);
 
-            var imageModel = new ImageData();
-            imageModel.OriginalFileName = image.Name;
-            imageModel.OriginalType = image.Type;
-            imageModel.OriginalContent = original;
-            imageModel.ThumbnailContent = thumbnail;
-            imageModel.ArticlePreviewContent = articelPreview;
-            imageModel.ArticleFullscreenContent = articleFullscreen;
-            imageModel.ArticleId = image.ArticleId;
+            var imageModel = new ImageData
+            {
+                OriginalFileName = image.Name,
+                OriginalType = image.Type,
+                OriginalContent = original,
+                ThumbnailContent = thumbnail,
+                ArticlePreviewContent = articelPreview,
+                ArticleFullscreenContent = articleFullscreen,
+                ArticleId = image.ArticleId
+            };
 
             var updatedEntity = dbContext.Images.Add(imageModel);
 
@@ -101,7 +102,7 @@ namespace ZvadoHacks.Services.ImageService
             }
             catch
             {
-
+                
             }               
         }
 
@@ -123,28 +124,7 @@ namespace ZvadoHacks.Services.ImageService
             await Task.WhenAll(tasks);
         }
 
-        public async Task ProcessUser(ImageInputModel image)
-        {
-            using var imageResult = await Image.LoadAsync(image.Content);
 
-            var original = await SaveImage(imageResult, imageResult.Width);
-            var thumbnail = await SaveImage(imageResult, ThumbnailWidth);
-
-            var dbContext = _serviceFactory
-            .CreateScope()
-            .ServiceProvider
-            .GetRequiredService<ApplicationDbContext>();
-
-            var imageModel = new ImageData();
-            imageModel.OriginalFileName = image.Name;
-            imageModel.OriginalType = image.Type;
-            imageModel.OriginalContent = original;
-            imageModel.ThumbnailContent = thumbnail;
-            imageModel.UserId = image.UserId;
-
-            await dbContext.Images.AddAsync(imageModel);
-            await dbContext.SaveChangesAsync();
-        }
 
         private async Task Processor(ImageInputModel image)
         {
@@ -152,7 +132,7 @@ namespace ZvadoHacks.Services.ImageService
 
             var original = await SaveImage(imageResult, imageResult.Width);
             var thumbnail = await SaveImage(imageResult, ThumbnailWidth);
-            var articelPreview = await SaveImage(imageResult, ArticlePreviewWidth);
+            var articlePreview = await SaveImage(imageResult, ArticlePreviewWidth);
             var articleFullscreen = await SaveImage(imageResult, ArticleFullscreenWidth);
 
             var dbContext = _serviceFactory
@@ -160,15 +140,17 @@ namespace ZvadoHacks.Services.ImageService
             .ServiceProvider
             .GetRequiredService<ApplicationDbContext>();
 
-            var imageModel = new ImageData();
-            imageModel.OriginalFileName = image.Name;
-            imageModel.OriginalType = image.Type;
-            imageModel.OriginalContent = original;
-            imageModel.ThumbnailContent = thumbnail;
-            imageModel.ArticlePreviewContent = articelPreview;
-            imageModel.ArticleFullscreenContent = articleFullscreen;
-            imageModel.ArticleId = image.ArticleId;
-            imageModel.ProjectDataId = image.ProjectId;
+            var imageModel = new ImageData
+            {
+                OriginalFileName = image.Name,
+                OriginalType = image.Type,
+                OriginalContent = original,
+                ThumbnailContent = thumbnail,
+                ArticlePreviewContent = articlePreview,
+                ArticleFullscreenContent = articleFullscreen,
+                ArticleId = image.ArticleId,
+                ProjectDataId = image.ProjectId
+            };
 
             await dbContext.Images.AddAsync(imageModel);
             await dbContext.SaveChangesAsync();
@@ -207,7 +189,7 @@ namespace ZvadoHacks.Services.ImageService
             return result;
         }
 
-        private async Task<byte[]> SaveImage(Image image, int resizeWidth)
+        private static async Task<byte[]> SaveImage(Image image, int resizeWidth)
         {
             var width = image.Width;
             var height = image.Height;
@@ -248,8 +230,8 @@ namespace ZvadoHacks.Services.ImageService
 
             var original = await SaveImage(imageResult, imageResult.Width);
             var thumbnail = await SaveImage(imageResult, ThumbnailWidth);
-            var articelPreview = await SaveImage(imageResult, ArticlePreviewWidth);
-            var articleFullscreen = await SaveImage(imageResult, ArticleFullscreenWidth);
+            await SaveImage(imageResult, ArticlePreviewWidth);
+            await SaveImage(imageResult, ArticleFullscreenWidth);
 
             var dbContext = _serviceFactory
             .CreateScope()
@@ -258,12 +240,14 @@ namespace ZvadoHacks.Services.ImageService
 
             var entityToRemove = await dbContext.Images.FirstOrDefaultAsync(i => i.UserId == image.UserId);
 
-            var imageModel = new ImageData();
-            imageModel.OriginalFileName = image.Name;
-            imageModel.OriginalType = image.Type;
-            imageModel.OriginalContent = original;
-            imageModel.ThumbnailContent = thumbnail;
-            imageModel.UserId = image.UserId;
+            var imageModel = new ImageData
+            {
+                OriginalFileName = image.Name,
+                OriginalType = image.Type,
+                OriginalContent = original,
+                ThumbnailContent = thumbnail,
+                UserId = image.UserId
+            };
 
             if (entityToRemove == null)
             {

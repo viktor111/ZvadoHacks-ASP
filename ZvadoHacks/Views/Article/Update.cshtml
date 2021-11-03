@@ -2,6 +2,8 @@
     var article = ViewData["article"] as Article;
 }
 
+@*ToDo Article Update View: Style the inputs and form*@
+
 <form asp-action="Update" asp-route-id="@article.Id.ToString()" enctype="multipart/form-data">
     <img id="imagePreview" src="/Images/ArticlePreview/@article.Image.Id.ToString()" alt="image preview" />
     <input id="imageInput" type="file" multiple="multiple" name="Image" />

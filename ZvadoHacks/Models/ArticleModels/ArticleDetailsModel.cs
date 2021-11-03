@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using ZvadoHacks.Data.Entities;
+using ZvadoHacks.Models.CommentModels;
 
 namespace ZvadoHacks.Models.ArticleModels
 {
@@ -18,6 +18,6 @@ namespace ZvadoHacks.Models.ArticleModels
 
         public string Content { get; set; }
 
-        public List<Comment> Comments { get; set; }
+        public List<CommentModel> Comments { get; set; }
     }
 }
